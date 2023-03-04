@@ -1,10 +1,9 @@
 import React from "react";
 import styled from "@emotion/styled";
 
-export default function Button({ state, ...props }) {
-  const handleAddNumber = (text, type) => {
-    props.onAddToInput(text, type);
-    props.onAddOperator(text, type);
+export default function Button({ state, onAddToButton }) {
+  const handleAddNumber = (value, type) => {
+    onAddToButton(value ,type);
   };
 
   return (

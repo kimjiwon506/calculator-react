@@ -11,7 +11,7 @@ import Button from '../components/Button';
 
 /** state, useRef 차이 : 화면에 보여지는지 */
 const STATE = {
-  inputValue: "",
+  inputValue: "0",
   buttonArray: [
     { text: "C", background: "#A29D95", color: "#111111" },
     { text: "+/-", background: "#A29D95", color: "#111111" },
@@ -37,59 +37,82 @@ const STATE = {
 
 export default function CalculatorContainer() {
   const [state, setState] = useState(STATE);
-  const prevNumRef = useRef(0);
-  const shouldSetNum = useRef(false);
+  const prevButton = useRef(0);
+  const shouldSetNumber = useRef(false);
+  const prevOperator = useRef("");
 
-  /** prev넘길때는 이전값이기 때문에 setState((prev) => {prev}) */
-  const onAddToInput = (number, type) => {
-    if (type === "number") {
+  //value -> state의 buttonArray -> text
+  const onAddToButton = (value, type) => {
+    // input에 number가 화면에 나오도록
+    if(type === "number") {
       setState((prev) => {
-        const inputValue = shouldSetNum.current
-          ? number
-          : String(prev.inputValue) + number;
-        shouldSetNum.current = false;
-        return {
-          ...state,
-          inputValue
-        };
-      });
+        // prev넘길때는 이전값이기 때문에 setState((prev) => {prev}
+        // inputValue => 0 + 누른값
+        const inputValue = shouldSetNumber.current ? Number(value) : Number(prev.inputValue) + Number(value);
+        // console.log('shouldSetNumber:', shouldSetNumber.current , 
+        // 'state.inputValue:',state.inputValue, 
+        // 'Number(prev.inputValue):', Number(prev.inputValue),
+        // 'Number(value):',Number(value)
+        // )
+        return { ...state, inputValue };
+      })
     }
-  };
-
-  const onAddOperator = (oper, type) => {
-    if (type === "operator") {
-      switch (oper) {
+    // *버튼을 눌렀을때 이전값이 나와야 하므로 useRef를 사용해서 이전 값을 저장해준다.
+    // 화면이 초기화, 그다음의 숫자만 화면에 나와야 하므로 useRef를 사용해서 화면을 초기화한다. shouldSetNumver
+    if(type === "operator") {
+      switch(value){
         case "+":
-          prevNumRef.current =
-            Number(prevNumRef.current) + Number(state.inputValue);
-          shouldSetNum.current = true;
-          setState({ ...state, inputValue: prevNumRef.current });
-          break;
+          // prevButton.current가 0일경우 Number(state.inputValue) 누른값 아닐경우 이전버튼 + 누른값 출력
+          prevButton.current = prevButton.current === 0 ? 
+            Number(state.inputValue) : 
+            Number(prevButton.current) + Number(state.inputValue);
+            shouldSetNumber.current = true;
+            setState({ ...state, inputValue: prevButton.current });
+        break;
         case "-":
-          prevNumRef.current =
-            prevNumRef.current === 0
-              ? Number(state.inputValue)
-              : Number(prevNumRef.current) - Number(state.inputValue);
-          shouldSetNum.current = true;
-          setState({ ...state, inputValue: prevNumRef.current });
-          break;
-        case "÷":
-          prevNumRef.current =
-            prevNumRef.current === 0
-              ? Number(state.inputValue)
-              : Number(prevNumRef.current) / Number(state.inputValue);
-          shouldSetNum.current = true;
-          setState({ ...state, inputValue: prevNumRef.current });
-          break;
+          prevButton.current = prevButton.current === 0 ? 
+          Number(state.inputValue) : 
+          Number(prevButton.current) - Number(state.inputValue);
+          shouldSetNumber.current = true;
+          setState({ ...state, inputValue: prevButton.current });
+        break;
         case "x":
-          break;
-        case "=":
-          break;
+          prevButton.current = prevButton.current === 0 ? 
+          Number(state.inputValue) : 
+          Number(prevButton.current) * Number(state.inputValue);
+          shouldSetNumber.current = true;
+          setState({ ...state, inputValue: prevButton.current });
+        break;
+        case "÷":
+          prevButton.current = prevButton.current === 0 ? 
+          Number(state.inputValue) : 
+          Number(prevButton.current) / Number(state.inputValue);
+          shouldSetNumber.current = true;
+          setState({ ...state, inputValue: prevButton.current });
+        break;
+        case "=": 
+         // useRef를 사용해서 prevOperator.current에 opreatopr값을 넣어준다
+        let totalValue;
+        if (prevOperator.current === "+"){
+          totalValue = Number(prevButton.current) + Number(state.inputValue);
+        } else if(prevOperator.current === "-"){
+          totalValue = Number(prevButton.current) - Number(state.inputValue);
+        } else if(prevOperator.current === "x"){
+          totalValue = Number(prevButton.current) * Number(state.inputValue);
+        } else if (prevOperator.current === "÷"){
+          totalValue = Number(prevButton.current) / Number(state.inputValue);
+        }
+        setState({ ...state, inputValue: totalValue });
+        shouldSetNumber.current = true;
         default:
-          break;
+        break;
       }
+      prevOperator.current = value;
+      console.log("prevOperator.current:",prevOperator.current);
     }
-  };
+
+  }
+
 
   return (
     <Container>
@@ -97,8 +120,7 @@ export default function CalculatorContainer() {
         <Input state={state} />
         <Button
           state={state}
-          onAddToInput={onAddToInput}
-          onAddOperator={onAddOperator}
+          onAddToButton={onAddToButton}
         />
       </CalculatorWrap>
     </Container>
