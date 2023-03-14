@@ -1,15 +1,6 @@
-import React from "react";
 import styled from "@emotion/styled";
 
-export default function Input({ state }) {
-  return (
-    <>
-      <InputStyle type="text" value={state.inputValue || ""} readOnly />
-    </>
-  );
-}
-
-const InputStyle = styled.input`
+export const _Input = styled.input`
   border: none;
   height: 50px;
   width: 98%;
