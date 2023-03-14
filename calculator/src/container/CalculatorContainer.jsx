@@ -1,14 +1,12 @@
 import React, { useState, useRef } from "react";
-import styled from '@emotion/styled'
 
-import Input from "../components/Input";
-import Button from '../components/Button';
 import Calculator from './../components/Cacluator/index';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { onAdd } from './../modules/calculator';
 
 export default function CalculatorContainer() {
   // const [state, setState] = useState(STATE);
-  // const prevButton = useRef('');
+  const prevButton = useRef('');
   // const shouldSetNumber = useRef(false);
   // const prevOperator = useRef("");
 
@@ -75,17 +73,10 @@ export default function CalculatorContainer() {
   //   }
   // }
   const calculator = useSelector(state => state.calculator);
+  const dispatch = useDispatch();
+  const onAddNumber = text => dispatch(onAdd(text))
 
   return (
-    // <Container>
-    //   <CalculatorWrap>
-    //     <Input state={state} />
-    //     <Button
-    //       state={state}
-    //       onAddToButton={onAddToButton}
-    //     />
-    //   </CalculatorWrap>
-    // </Container>
-    <Calculator calculator={calculator} />
+    <Calculator calculator={calculator} onAddNumber={onAddNumber} prevButton={prevButton} />
   );
 }
