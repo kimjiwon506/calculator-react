@@ -1,5 +1,5 @@
 const INITIALSTATE = {
-    inputValue: "0",
+    inputValue: '0',
     buttonArray: [
       { text: "C", id:"reset", background: "#A29D95", color: "#111111" },
       { text: "+/-", id:"", background: "#A29D95", color: "#111111" },
@@ -23,23 +23,34 @@ const INITIALSTATE = {
     ]
   };
 
+const CHANGEINPUT = 'calculator/CHANGEINPUT'
 const ADD = 'calculator/ADD';
 const MINUS = 'calculator/MINUS';
 const MULTIPLE = 'calculator/MULTIPLE';
 const DIVIDE = 'calculator/DIVIDE';
 const RESET = 'calculator/RESET';
 
-export const onAdd = (prev, text) => ({
+export const onChangeInput = (text) => ({
+  type: CHANGEINPUT,
+  text
+})
+
+export const onAdd = (text) => ({
   type : ADD,
   text
 })
 
 export default function calculator(state = INITIALSTATE, action){
     switch(action.type) {
+      case CHANGEINPUT: 
+      return {
+        ...state,
+        inputValue : Number(action.text)
+      }
       case ADD: 
       return {
         ...state,
-        inputValue : action.text
+        inputValue : Number(action.text)
       }
       default:
         return state;
