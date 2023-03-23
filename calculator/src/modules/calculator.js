@@ -25,9 +25,6 @@ const INITIALSTATE = {
 
 const CHANGEINPUT = 'calculator/CHANGEINPUT'
 const ADD = 'calculator/ADD';
-const MINUS = 'calculator/MINUS';
-const MULTIPLE = 'calculator/MULTIPLE';
-const DIVIDE = 'calculator/DIVIDE';
 const RESET = 'calculator/RESET';
 
 export const onChangeInput = (text) => ({
@@ -50,7 +47,7 @@ export default function calculator(state = INITIALSTATE, action){
       case ADD: 
       return {
         ...state,
-        inputValue : Number(action.text)
+        inputValue : Number(state.inputValue) + Number(action.text)
       }
       default:
         return state;

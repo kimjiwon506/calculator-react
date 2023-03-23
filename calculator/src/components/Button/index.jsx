@@ -1,21 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 import * as Styled from './styled';
 
-export default function Button({calculator, onChangeInputText, prevValueRef, nextValueRef, onAddNumber, shouldSetNumber }) {
-    
-    prevValueRef.current = calculator.inputValue;
+export default function Button({calculator, ...props }) {
+    const {onChangeInputText, onAddNumber, prevButton, prevValueRef, nextValueRef, shouldSetNumber} = props;
     
     const onClick = (item) => {
       if((item.type === "number")){
+        prevValueRef.current = calculator.inputValue;
         nextValueRef.current = item.text;
-        var currentValue = prevValueRef.current + nextValueRef.current;
+        const currentValue = prevValueRef.current + nextValueRef.current;
         onChangeInputText(currentValue)
       }
+
       if(item.type === 'operator' && item.text === '+') {
-        shouldSetNumber.current = true;
-        console.log(calculator.inputValue + currentValue );
-        // shouldSetNumber.current = true;
-        // onAddNumber(currentValue + nextValueRef.current)
       }
     }
 
